@@ -18,5 +18,11 @@ namespace v1.Domain.Drivers.Entities
         [Required]
         public string Age { get; set; }
 
+        public Driver(string name, string age)
+        {
+            this.Name = name;
+            this.Age = age;
+        }
+
     }
 }

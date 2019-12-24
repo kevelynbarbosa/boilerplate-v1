@@ -24,5 +24,13 @@ namespace v1.API.Controllers.Drivers
         {
             return _driversService.Get();
         }
+
+        [HttpPost]
+        public Driver Create()
+        {
+            var driver = new Driver("Kevelyn Barbosa", "21");
+            
+            return _driversService.Create(driver);
+        }
     }
 }
