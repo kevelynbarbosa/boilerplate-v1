@@ -1,10 +1,11 @@
 ﻿using MongoDB.Driver;
 using System.Collections.Generic;
 using v1.Domain.Drivers.Entities;
+using v1.Domain.Drivers.Services.Interfaces;
 
 namespace v1.Domain.Drivers.Services
 {
-    public class DriversService
+    public class DriversService : IDriversService
     {
         private readonly IMongoCollection<Driver> drivers;
 

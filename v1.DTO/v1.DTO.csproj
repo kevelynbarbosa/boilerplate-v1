@@ -4,9 +4,4 @@
     <TargetFramework>netcoreapp3.0</TargetFramework>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="Drivers\Responses\" />
-    <Folder Include="Drivers\Requests\" />
-  </ItemGroup>
-
 </Project>

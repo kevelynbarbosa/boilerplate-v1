@@ -2,7 +2,8 @@
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using v1.Domain.Drivers.Entities;
-using v1.Domain.Drivers.Services;
+using v1.Domain.Drivers.Services.Interfaces;
+using v1.DTO.Drivers.Requests;
 
 namespace v1.API.Controllers.Drivers
 {
@@ -10,10 +11,10 @@ namespace v1.API.Controllers.Drivers
     [Route("[controller]")]
     public class DriversController : ControllerBase
     {
-        private readonly DriversService _driversService;
-        private readonly ILogger<WeatherForecastController> _logger;
+        private readonly IDriversService _driversService;
+        private readonly ILogger<DriversController> _logger;
 
-        public DriversController(ILogger<WeatherForecastController> logger, DriversService driversService)
+        public DriversController(ILogger<DriversController> logger, IDriversService driversService)
         {
             _logger = logger;
             _driversService = driversService;
@@ -26,9 +27,9 @@ namespace v1.API.Controllers.Drivers
         }
 
         [HttpPost]
-        public Driver Create()
+        public Driver Create([FromBody] DriverRequest request)
         {
-            var driver = new Driver("Kevelyn Barbosa", "21");
+            var driver = new Driver(request.Name, request.Age);
             
             return _driversService.Create(driver);
         }
