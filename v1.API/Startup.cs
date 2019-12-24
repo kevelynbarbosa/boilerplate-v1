@@ -11,6 +11,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using MongoDB.Driver;
+using v1.Domain.Drivers.Services;
 
 namespace v1.API
 {
@@ -36,6 +38,15 @@ namespace v1.API
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
             });
+
+            //  MongoDB
+            MongoClient client = new MongoClient(Configuration.GetConnectionString("DriversDb"));
+
+            IMongoDatabase database = client.GetDatabase("DriversDb");
+
+            services.AddScoped<IMongoDatabase>(x => client.GetDatabase("DriversDb"));
+
+            services.AddScoped<DriversService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
