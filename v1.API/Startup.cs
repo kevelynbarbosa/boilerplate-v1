@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -57,8 +58,16 @@ namespace v1.API
                        .WithScopedLifetime());
 
             // AutoMapper 
-            //services.AddAutoMapper(typeof(DriversAppProfile).GetTypeInfo().Assembly);
             services.AddAutoMapper(typeof(DriversAppProfile));
+
+            // Response Compression
+            services.Configure<GzipCompressionProviderOptions>(options => options.Level = System.IO.Compression.CompressionLevel.Optimal);
+
+            services.AddResponseCompression(options =>
+            {
+                options.EnableForHttps = true;
+                options.Providers.Add<GzipCompressionProvider>();
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -94,6 +103,9 @@ namespace v1.API
             {
                 endpoints.MapControllers();
             });
+
+            // Configure to use Response Compression
+            app.UseResponseCompression();
         }
     }
 }
