@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -5,6 +6,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
+using v1.Application.Drivers.AppServices;
+using v1.Application.Drivers.Profiles;
 using v1.Domain.Drivers.Services;
 
 namespace v1.API
@@ -45,6 +48,17 @@ namespace v1.API
                         .AddClasses()
                         .AsImplementedInterfaces()
                         .WithScopedLifetime());
+
+            // AppService Layer
+            services.Scan(scan => scan.
+                       FromAssemblyOf<DriversAppService>()
+                       .AddClasses()
+                       .AsImplementedInterfaces()
+                       .WithScopedLifetime());
+
+            // AutoMapper 
+            //services.AddAutoMapper(typeof(DriversAppProfile).GetTypeInfo().Assembly);
+            services.AddAutoMapper(typeof(DriversAppProfile));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

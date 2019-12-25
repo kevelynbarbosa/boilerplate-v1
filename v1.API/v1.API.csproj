@@ -14,7 +14,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\v1.Application\v1.Application.csproj" />
-    <ProjectReference Include="..\v1.DTO\v1.DTO.csproj" />
   </ItemGroup>
 
 </Project>

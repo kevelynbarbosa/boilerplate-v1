@@ -14,14 +14,18 @@ namespace v1.Domain.Drivers.Services
             drivers = database.GetCollection<Driver>("Drivers");
         }
 
-        public List<Driver> Get()
+        public IEnumerable<Driver> Get()
         {
-            return drivers.Find(driver => true).ToList();
+            var driversList = drivers.Find(x => true).ToEnumerable();
+
+            return driversList;
         }
 
         public Driver Get(string id)
         {
-            return drivers.Find(driver => driver.Id == id).FirstOrDefault();
+            var driver = drivers.Find(x => x.Id == id).FirstOrDefault();
+
+            return driver;
         }
 
         public Driver Create(Driver driver)
@@ -31,19 +35,20 @@ namespace v1.Domain.Drivers.Services
             return driver;
         }
 
-        public void Update(string id, Driver driver)
+        public ReplaceOneResult Update(string id, Driver driver)
         {
-            drivers.ReplaceOne(car => car.Id == id, driver);
+            var result = drivers.ReplaceOne(x => x.Id == id, driver);
+
+            return result;
         }
 
-        public void Remove(Driver driver)
+
+        public DeleteResult Delete(Driver driver)
         {
-            drivers.DeleteOne(car => car.Id == driver.Id);
+            var result = drivers.DeleteOne(x => x.Id == driver.Id);
+
+            return result;
         }
 
-        public void Remove(string id)
-        {
-            drivers.DeleteOne(car => car.Id == id);
-        }
     }
 }

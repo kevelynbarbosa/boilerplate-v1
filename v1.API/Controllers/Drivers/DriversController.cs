@@ -1,37 +1,47 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using v1.Domain.Drivers.Entities;
-using v1.Domain.Drivers.Services.Interfaces;
+using v1.Application.Drivers.AppServices.Interfaces;
 using v1.DTO.Drivers.Requests;
 
 namespace v1.API.Controllers.Drivers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("drivers")]
     public class DriversController : ControllerBase
     {
-        private readonly IDriversService _driversService;
+        private readonly IDriversAppService _driversAppService;
         private readonly ILogger<DriversController> _logger;
 
-        public DriversController(ILogger<DriversController> logger, IDriversService driversService)
+        public DriversController(ILogger<DriversController> logger, IDriversAppService driversAppService)
         {
             _logger = logger;
-            _driversService = driversService;
+            _driversAppService = driversAppService;
         }
 
         [HttpGet]
-        public IEnumerable<Driver> Get()
-        {
-            return _driversService.Get();
-        }
+        [Route("")]
+        public IActionResult GetAll() 
+            => Ok(_driversAppService.Get());
+
+        [HttpGet]
+        [Route("{id}")]
+        public IActionResult Get([FromRoute] string id)
+            => Ok(_driversAppService.Get(id));
 
         [HttpPost]
-        public Driver Create([FromBody] DriverRequest request)
-        {
-            var driver = new Driver(request.Name, request.Age);
-            
-            return _driversService.Create(driver);
-        }
+        [Route("")]
+        public IActionResult Create([FromBody] DriverRequest request)
+            => Ok(_driversAppService.Create(request));
+
+        [HttpPut]
+        [Route("{id}")]
+        public IActionResult Update([FromRoute] string id, [FromBody] DriverRequest request)
+            => Ok(_driversAppService.Update(id, request));
+
+        [HttpDelete]
+        [Route("{id}")]
+        public IActionResult Delete([FromRoute] string id)
+            => Ok(_driversAppService.Delete(id));
+
     }
 }
