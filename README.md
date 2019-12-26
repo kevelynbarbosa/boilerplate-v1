@@ -1,10 +1,9 @@
 # Boilerplate .NET Core
 --
-### Using 
+### Comandos para iniciar o MongoDB
 
-*JwT Auth
-*Repository Pattern
-*Swagger
-*NHibernate
-*MySQL
+1. mongod
+2. mongo
+3. use DriversDb
+4. db.createCollection ('Drivers')
 

@@ -7,37 +7,37 @@ namespace v1.Domain.Drivers.Services
 {
     public class DriversService : IDriversService
     {
-        private readonly IMongoCollection<Driver> drivers;
+        private readonly IMongoCollection<Driver> _driversRepository;
 
         public DriversService(IMongoDatabase database)
         {
-            drivers = database.GetCollection<Driver>("Drivers");
+            _driversRepository = database.GetCollection<Driver>("Drivers");
         }
 
         public IEnumerable<Driver> Get()
         {
-            var driversList = drivers.Find(x => true).ToEnumerable();
+            var driversList = _driversRepository.Find(x => true).ToEnumerable();
 
             return driversList;
         }
 
         public Driver Get(string id)
         {
-            var driver = drivers.Find(x => x.Id == id).FirstOrDefault();
+            var driver = _driversRepository.Find(x => x.Id == id).FirstOrDefault();
 
             return driver;
         }
 
         public Driver Create(Driver driver)
         {
-            drivers.InsertOne(driver);
+            _driversRepository.InsertOne(driver);
 
             return driver;
         }
 
         public ReplaceOneResult Update(string id, Driver driver)
         {
-            var result = drivers.ReplaceOne(x => x.Id == id, driver);
+            var result = _driversRepository.ReplaceOne(x => x.Id == id, driver);
 
             return result;
         }
@@ -45,7 +45,7 @@ namespace v1.Domain.Drivers.Services
 
         public DeleteResult Delete(Driver driver)
         {
-            var result = drivers.DeleteOne(x => x.Id == driver.Id);
+            var result = _driversRepository.DeleteOne(x => x.Id == driver.Id);
 
             return result;
         }

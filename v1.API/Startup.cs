@@ -15,13 +15,15 @@ namespace v1.API
 {
     public class Startup
     {
+        private string MainDbName { get; }
+        public IConfiguration Configuration { get; }
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            MainDbName = Configuration.GetSection("MainDbName").Value;
         }
-
-        public IConfiguration Configuration { get; }
-
+       
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -37,11 +39,11 @@ namespace v1.API
             });
 
             //  MongoDB
-            MongoClient client = new MongoClient(Configuration.GetConnectionString("DriversDb"));
+            MongoClient client = new MongoClient(Configuration.GetConnectionString(MainDbName));
 
-            IMongoDatabase database = client.GetDatabase("DriversDb");
+            IMongoDatabase database = client.GetDatabase(MainDbName);
 
-            services.AddScoped<IMongoDatabase>(x => client.GetDatabase("DriversDb"));
+            services.AddScoped<IMongoDatabase>(x => client.GetDatabase(MainDbName));   
 
             // Service Layer
             services.Scan(scan => scan.
