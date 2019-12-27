@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using v1.Application.Drivers.AppServices.Interfaces;
 using v1.DTO.Drivers.Requests;
@@ -30,6 +31,7 @@ namespace v1.API.Controllers.Drivers
 
         [HttpPost]
         [Route("")]
+        [Authorize]
         public IActionResult Create([FromBody] DriverRequest request)
             => Ok(_driversAppService.Create(request));
 

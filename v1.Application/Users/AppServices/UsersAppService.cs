@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using System;
 using v1.Application.Users.AppServices.Interfaces;
 using v1.Domain.Users.Entities;
 using v1.Domain.Users.Services.Interfaces;
@@ -11,11 +12,13 @@ namespace v1.Application.Users.AppServices
     {
         private readonly IMapper _mapper;
         private readonly IUsersService _usersService;
+        private readonly ITokensService _tokensService;
 
-        public UsersAppService(IMapper mapper, IUsersService _usersService)
+        public UsersAppService(IMapper mapper, IUsersService _usersService, ITokensService tokensService)
         {
             this._usersService = _usersService;
             this._mapper = mapper;
+            this._tokensService = tokensService;
         }
 
         public UserResponse Create(UserRequest request)
@@ -27,11 +30,14 @@ namespace v1.Application.Users.AppServices
             return _mapper.Map<UserResponse>(userCreated);
         }
 
-        public UserResponse Get(string email)
+        public string Login(UserRequest request)
         {
-            var user = this._usersService.Get(email);
+            var user = this._usersService.Get(request.Email);
 
-            return _mapper.Map<UserResponse>(user);
+            if (user.Password != request.Password)
+                throw new Exception("Not Authorized");
+
+            return _tokensService.GenerateToken();           
         }
 
     }

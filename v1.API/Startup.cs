@@ -1,12 +1,15 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
+using System.Text;
 using v1.Application.Drivers.AppServices;
 using v1.Application.Drivers.Profiles;
 using v1.Domain.Drivers.Services;
@@ -45,19 +48,7 @@ namespace v1.API
 
             services.AddScoped<IMongoDatabase>(x => client.GetDatabase(MainDbName));
 
-            // Service Layer
-            services.Scan(scan => scan.
-                        FromAssemblyOf<DriversService>()
-                        .AddClasses()
-                        .AsImplementedInterfaces()
-                        .WithScopedLifetime());
-
-            // AppService Layer
-            services.Scan(scan => scan.
-                       FromAssemblyOf<DriversAppService>()
-                       .AddClasses()
-                       .AsImplementedInterfaces()
-                       .WithScopedLifetime());
+            InjectMultiplesLayers(services);
 
             // AutoMapper 
             services.AddAutoMapper(typeof(DriversAppProfile));
@@ -73,6 +64,8 @@ namespace v1.API
 
             // CORS
             services.AddCors();
+
+            ConfigureAuthUsingJwt(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -108,6 +101,8 @@ namespace v1.API
                 .AllowAnyMethod()
                 .AllowAnyHeader());
 
+            app.UseAuthentication();
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
@@ -118,5 +113,47 @@ namespace v1.API
             // Configure to use Response Compression
             app.UseResponseCompression();
         }
+
+        private void InjectMultiplesLayers(IServiceCollection services)
+        {
+            // Service Layer
+            services.Scan(scan => scan.
+                        FromAssemblyOf<DriversService>()
+                        .AddClasses()
+                        .AsImplementedInterfaces()
+                        .WithScopedLifetime());
+
+            // AppService Layer
+            services.Scan(scan => scan.
+                       FromAssemblyOf<DriversAppService>()
+                       .AddClasses()
+                       .AsImplementedInterfaces()
+                       .WithScopedLifetime());
+
+        }
+
+        private void ConfigureAuthUsingJwt(IServiceCollection services)
+        {
+            services.AddAuthentication(opt =>
+            {
+                opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+           .AddJwtBearer(options =>
+           {
+               options.TokenValidationParameters = new TokenValidationParameters
+               {
+                   ValidateIssuer = true,
+                   ValidateAudience = true,
+                   ValidateLifetime = true,
+                   ValidateIssuerSigningKey = true,
+
+                   ValidIssuer = "http://localhost:5000",
+                   ValidAudience = "http://localhost:5000",
+                   IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("fedaf7d8863b48e197b9287d492b708e"))
+               };
+           });
+        }
+
     }
 }

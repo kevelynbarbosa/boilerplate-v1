@@ -20,9 +20,9 @@ namespace v1.API.Controllers.Users
 
 
         [HttpPost]
-        [Route("{id}")]
-        public IActionResult Login([FromRoute] string id)
-            => Ok(_usersAppService.Get(id));
+        [Route("login")]
+        public IActionResult Login([FromBody] UserRequest request)
+            => Ok(_usersAppService.Login(request));
 
         [HttpPost]
         [Route("")]

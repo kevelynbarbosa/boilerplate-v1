@@ -7,7 +7,7 @@ namespace v1.Application.Users.AppServices.Interfaces
 {
     public interface IUsersAppService
     {
-        UserResponse Get(string email);
+        string Login(UserRequest request);
         UserResponse Create(UserRequest user);
     }
 }
