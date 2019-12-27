@@ -72,15 +72,7 @@ namespace v1.API
             });
 
             // CORS
-            services.AddCors(options =>
-            {
-                options.AddPolicy("EnableCORS", builder =>
-                {
-                    builder.AllowAnyOrigin()
-                       .AllowAnyHeader()
-                       .AllowAnyMethod();
-                });
-            });
+            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -111,13 +103,16 @@ namespace v1.API
             app.UseRouting();
 
             // CORS
-            app.UseCors("EnableCORS");
+            app.UseCors(x =>
+                x.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader());
 
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers().RequireCors("policy-name");
+                endpoints.MapControllers();
             });
 
             // Configure to use Response Compression
