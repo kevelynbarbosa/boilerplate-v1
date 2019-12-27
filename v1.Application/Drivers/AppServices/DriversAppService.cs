@@ -22,7 +22,7 @@ namespace v1.Application.Drivers.AppServices
 
         public DriverResponse Create(DriverRequest request)
         {
-            var driver = new Driver(request.Name, request.Age);
+            var driver = new Driver(request.Name, request.BirthDate, request.CPF, request.City, request.CnhNumber, request.CnhCategory, request.CnhValidate);
 
             var driverCreated = _driversService.Create(driver);
 
@@ -56,7 +56,12 @@ namespace v1.Application.Drivers.AppServices
             var driver = _driversService.Get(id);
 
             driver.Name = request.Name;
-            driver.Age = request.Age;
+            driver.BirthDate = request.BirthDate;
+            driver.CPF = request.CPF;
+            driver.City = request.City;
+            driver.CnhNumber = request.CnhNumber;
+            driver.CnhCategory = request.CnhCategory;
+            driver.CnhValidate = request.CnhValidate;
 
             return _driversService.Update(id, driver);
         }

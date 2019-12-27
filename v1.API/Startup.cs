@@ -23,7 +23,7 @@ namespace v1.API
             Configuration = configuration;
             MainDbName = Configuration.GetSection("MainDbName").Value;
         }
-       
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -43,7 +43,7 @@ namespace v1.API
 
             IMongoDatabase database = client.GetDatabase(MainDbName);
 
-            services.AddScoped<IMongoDatabase>(x => client.GetDatabase(MainDbName));   
+            services.AddScoped<IMongoDatabase>(x => client.GetDatabase(MainDbName));
 
             // Service Layer
             services.Scan(scan => scan.
@@ -69,6 +69,17 @@ namespace v1.API
             {
                 options.EnableForHttps = true;
                 options.Providers.Add<GzipCompressionProvider>();
+            });
+
+            // CORS
+            services.AddCors(options =>
+            {
+                options.AddPolicy("EnableCORS", builder =>
+                {
+                    builder.AllowAnyOrigin()
+                       .AllowAnyHeader()
+                       .AllowAnyMethod();
+                });
             });
         }
 
@@ -99,11 +110,14 @@ namespace v1.API
 
             app.UseRouting();
 
+            // CORS
+            app.UseCors("EnableCORS");
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                endpoints.MapControllers().RequireCors("policy-name");
             });
 
             // Configure to use Response Compression
