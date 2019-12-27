@@ -14,8 +14,14 @@ namespace v1.Domain.Users.Entities
         [Required]
         public string Email { get; set; }
 
-        [BsonElement("Senha")]
+        [BsonElement("Password")]
         [Required]
-        public string Senha { get; set; }
+        public string Password { get; set; }
+
+        public User(string email, string password)
+        {
+            this.Email = email;
+            this.Password = password;
+        }
     }
 }

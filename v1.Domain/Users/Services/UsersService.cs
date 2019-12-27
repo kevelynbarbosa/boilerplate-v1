@@ -21,9 +21,9 @@ namespace v1.Domain.Users.Services
             return userList;
         }
 
-        public User Get(string id)
+        public User Get(string email)
         {
-            var user = _usersRepository.Find(x => x.Id == id).FirstOrDefault();
+            var user = _usersRepository.Find(x => x.Email == email).FirstOrDefault();
 
             return user;
         }
