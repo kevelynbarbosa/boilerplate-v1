@@ -30,14 +30,17 @@ namespace v1.Application.Users.AppServices
             return _mapper.Map<UserResponse>(userCreated);
         }
 
-        public string Login(UserRequest request)
+        public TokenResponse Login(UserRequest request)
         {
             var user = this._usersService.Get(request.Email);
 
             if (user.Password != request.Password)
                 throw new Exception("Not Authorized");
 
-            return _tokensService.GenerateToken();           
+            return new TokenResponse
+            {
+                Token= (_tokensService.GenerateToken())
+            };           
         }
 
     }
